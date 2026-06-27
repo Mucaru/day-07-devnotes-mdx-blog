@@ -1,0 +1,80 @@
+---
+title: "Tailwind CSS v4: Perubahan yang Mengubah Segalanya"
+description: "Panduan lengkap migrasi dan fitur baru Tailwind CSS v4 — dari konfigurasi berbasis CSS hingga engine baru yang jauh lebih cepat."
+date: "2026-06-22"
+tags: ["tailwind", "css", "tutorial"]
+author: "Mucaru"
+---
+
+Tailwind CSS v4 bukan sekadar update minor. Ini adalah penulisan ulang fundamental yang mengubah cara kita mengkonfigurasi dan menggunakan framework ini.
+
+## Goodbye `tailwind.config.js`
+
+Perubahan paling dramatis: tidak ada lagi file konfigurasi JavaScript. Semua konfigurasi kini dilakukan langsung di CSS.
+
+```css
+/* globals.css — v4 way */
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #6366f1;
+  --color-brand-dark: #4f46e5;
+  
+  --font-sans: "Inter", sans-serif;
+  --font-display: "Cal Sans", sans-serif;
+  
+  --radius-card: 12px;
+}
+```
+
+## Dark Mode dengan `@custom-variant`
+
+```css
+@custom-variant dark (&:where(.dark, .dark *));
+```
+
+Kemudian gunakan di component:
+
+```tsx
+<div className="bg-white dark:bg-zinc-900">
+  <p className="text-zinc-900 dark:text-zinc-100">
+    Konten saya
+  </p>
+</div>
+```
+
+## Engine Baru: Lightning CSS
+
+Tailwind v4 menggunakan Lightning CSS sebagai engine-nya. Hasilnya:
+
+- **Build time 5x lebih cepat**
+- Bundle size lebih kecil
+- Support CSS modern out of the box (nesting, `:has()`, dll)
+
+## `@utility` untuk Custom Utilities
+
+```css
+@utility container-narrow {
+  max-width: 65ch;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+```
+
+Langsung pakai di HTML:
+
+```html
+<article class="container-narrow">
+  <!-- konten artikel -->
+</article>
+```
+
+## Tips Migrasi dari v3
+
+1. Hapus `tailwind.config.ts`
+2. Pindahkan semua custom colors ke `@theme {}`
+3. Ganti `darkMode: 'class'` dengan `@custom-variant dark`
+4. Hapus `content` array — v4 auto-detect
+5. Google Fonts: gunakan `<link>` di HTML, bukan `@import url()` di CSS
+
+Selamat migrasi!

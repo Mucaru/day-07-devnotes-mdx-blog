@@ -1,0 +1,91 @@
+---
+title: "5 Fitur Next.js 15 yang Wajib Kamu Tahu"
+description: "Deep dive ke fitur-fitur terbaru Next.js 15 yang mengubah cara kita membangun web modern, dari Turbopack hingga Server Actions yang makin matang."
+date: "2026-06-21"
+tags: ["nextjs", "react", "tutorial"]
+author: "Mucaru"
+---
+
+Next.js 15 hadir dengan banyak perubahan signifikan. Setelah menggunakannya di beberapa project, berikut adalah fitur-fitur yang paling berdampak pada workflow saya.
+
+## 1. Turbopack Stable untuk Development
+
+Turbopack akhirnya stabil untuk mode development. Peningkatan kecepatan yang saya rasakan sangat nyata — cold start yang dulu butuh 8 detik kini selesai dalam kurang dari 2 detik.
+
+```bash
+# Aktifkan Turbopack
+next dev --turbopack
+```
+
+## 2. Async Request APIs
+
+Perubahan paling breaking di Next.js 15 adalah `cookies()`, `headers()`, dan `params` kini bersifat async.
+
+```typescript
+// ❌ Next.js 14 — synchronous
+import { cookies } from "next/headers";
+
+export function MyComponent() {
+  const cookieStore = cookies();
+  const token = cookieStore.get("token");
+}
+
+// ✅ Next.js 15 — async
+import { cookies } from "next/headers";
+
+export async function MyComponent() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token");
+}
+```
+
+## 3. Server Actions yang Lebih Matang
+
+Server Actions kini bisa dipanggil langsung dari client component tanpa boilerplate berlebihan.
+
+```typescript
+// app/actions.ts
+"use server";
+
+export async function createPost(formData: FormData) {
+  const title = formData.get("title") as string;
+  
+  // Validasi, simpan ke DB, revalidate cache
+  await db.post.create({ data: { title } });
+  revalidatePath("/blog");
+}
+```
+
+## 4. Partial Prerendering (PPR)
+
+PPR memungkinkan satu halaman memiliki bagian static dan dynamic secara bersamaan — tanpa kompromi performa.
+
+```typescript
+// next.config.ts
+export default {
+  experimental: {
+    ppr: "incremental",
+  },
+};
+```
+
+## 5. Enhanced `<Form>` Component
+
+Next.js 15 memperkenalkan `<Form>` component bawaan yang otomatis handle prefetching dan navigation.
+
+```tsx
+import Form from "next/form";
+
+export function SearchForm() {
+  return (
+    <Form action="/search">
+      <input name="q" placeholder="Cari artikel..." />
+      <button type="submit">Cari</button>
+    </Form>
+  );
+}
+```
+
+## Kesimpulan
+
+Next.js 15 adalah leap forward yang signifikan. Migration dari v14 membutuhkan effort, tapi hasilnya sepadan terutama untuk project skala besar.
